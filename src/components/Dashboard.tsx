@@ -69,7 +69,6 @@ export default function Dashboard() {
     });
 
     newSocket.on('mqttStatus', (status: MqttStatus) => {
-      console.log({ status });
       setMqttConnected(status.connected);
     });
 
