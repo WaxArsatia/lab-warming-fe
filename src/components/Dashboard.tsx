@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+} from "chart.js";
+import { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
+import { io } from "socket.io-client";
 
 // Register Chart.js components
 ChartJS.register(
@@ -20,7 +20,7 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 interface SensorData {
@@ -49,18 +49,18 @@ export default function Dashboard() {
 
   useEffect(() => {
     const socketUrl =
-      import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+      import.meta.env.VITE_SOCKET_URL || "http://localhost:3000";
     const newSocket = io(socketUrl);
 
-    newSocket.on('connect', () => {
+    newSocket.on("connect", () => {
       setIsConnected(true);
     });
 
-    newSocket.on('disconnect', () => {
+    newSocket.on("disconnect", () => {
       setIsConnected(false);
     });
 
-    newSocket.on('sensorData', (data: SensorData) => {
+    newSocket.on("sensorData", (data: SensorData) => {
       setCurrentData(data);
       setDataHistory((prev) => {
         const updated = [...prev, data];
@@ -68,7 +68,7 @@ export default function Dashboard() {
       });
     });
 
-    newSocket.on('mqttStatus', (status: MqttStatus) => {
+    newSocket.on("mqttStatus", (status: MqttStatus) => {
       setMqttConnected(status.connected);
     });
 
@@ -81,20 +81,20 @@ export default function Dashboard() {
     labels: dataHistory.map((d) => new Date(d.time).toLocaleTimeString()),
     datasets: [
       {
-        label: 'Temperature (°C)',
+        label: "Temperature (°C)",
         data: dataHistory.map((d) => d.temperature),
-        borderColor: 'rgb(239, 68, 68)',
-        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        borderColor: "rgb(239, 68, 68)",
+        backgroundColor: "rgba(239, 68, 68, 0.1)",
         tension: 0.3,
-        yAxisID: 'y',
+        yAxisID: "y",
       },
       {
-        label: 'Humidity (%)',
+        label: "Humidity (%)",
         data: dataHistory.map((d) => d.humidity),
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderColor: "rgb(59, 130, 246)",
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
         tension: 0.3,
-        yAxisID: 'y1',
+        yAxisID: "y1",
       },
     ],
   };
@@ -103,35 +103,35 @@ export default function Dashboard() {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
-      mode: 'index' as const,
+      mode: "index" as const,
       intersect: false,
     },
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: "top" as const,
       },
       title: {
         display: true,
-        text: 'Temperature & Humidity History',
+        text: "Temperature & Humidity History",
       },
     },
     scales: {
       y: {
-        type: 'linear' as const,
+        type: "linear" as const,
         display: true,
-        position: 'left' as const,
+        position: "left" as const,
         title: {
           display: true,
-          text: 'Temperature (°C)',
+          text: "Temperature (°C)",
         },
       },
       y1: {
-        type: 'linear' as const,
+        type: "linear" as const,
         display: true,
-        position: 'right' as const,
+        position: "right" as const,
         title: {
           display: true,
-          text: 'Humidity (%)',
+          text: "Humidity (%)",
         },
         grid: {
           drawOnChartArea: false,
@@ -157,12 +157,12 @@ export default function Dashboard() {
             <div>
               <p className="text-sm text-gray-600">Socket Connection</p>
               <p className="text-lg font-semibold">
-                {isConnected ? 'Connected' : 'Disconnected'}
+                {isConnected ? "Connected" : "Disconnected"}
               </p>
             </div>
             <div
               className={`w-4 h-4 rounded-full ${
-                isConnected ? 'bg-green-500' : 'bg-red-500'
+                isConnected ? "bg-green-500" : "bg-red-500"
               }`}
             />
           </div>
@@ -171,12 +171,12 @@ export default function Dashboard() {
             <div>
               <p className="text-sm text-gray-600">Data Source (MQTT)</p>
               <p className="text-lg font-semibold">
-                {mqttConnected ? 'Connected' : 'Disconnected'}
+                {mqttConnected ? "Connected" : "Disconnected"}
               </p>
             </div>
             <div
               className={`w-4 h-4 rounded-full ${
-                mqttConnected ? 'bg-green-500' : 'bg-red-500'
+                mqttConnected ? "bg-green-500" : "bg-red-500"
               }`}
             />
           </div>
@@ -187,14 +187,14 @@ export default function Dashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <p className="text-sm text-gray-600 mb-2">Temperature</p>
             <p className="text-4xl font-bold text-red-500">
-              {currentData?.temperature?.toFixed(1) ?? '--'}°C
+              {currentData?.temperature?.toFixed(1) ?? "--"}°C
             </p>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
             <p className="text-sm text-gray-600 mb-2">Humidity</p>
             <p className="text-4xl font-bold text-blue-500">
-              {currentData?.humidity?.toFixed(1) ?? '--'}%
+              {currentData?.humidity?.toFixed(1) ?? "--"}%
             </p>
           </div>
 
@@ -203,7 +203,7 @@ export default function Dashboard() {
             <p className="text-lg font-semibold text-gray-700">
               {currentData?.time
                 ? new Date(currentData.time).toLocaleTimeString()
-                : '--'}
+                : "--"}
             </p>
           </div>
         </div>
@@ -241,7 +241,7 @@ export default function Dashboard() {
                   <span className="text-gray-600">Min:</span>
                   <span className="font-semibold">
                     {Math.min(...dataHistory.map((d) => d.temperature)).toFixed(
-                      1
+                      1,
                     )}
                     °C
                   </span>
@@ -250,7 +250,7 @@ export default function Dashboard() {
                   <span className="text-gray-600">Max:</span>
                   <span className="font-semibold">
                     {Math.max(...dataHistory.map((d) => d.temperature)).toFixed(
-                      1
+                      1,
                     )}
                     °C
                   </span>
